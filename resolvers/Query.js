@@ -2,8 +2,8 @@ const { reviews } = require("../db");
 
 exports.Query= {
     hello: (parent, args, context) => "fahim",
-    products: (parent, {filter}, {products})=>{
-        let filteredProducts = products;
+    products: (parent, {filter}, {db})=>{
+        let filteredProducts = db.products;
         if(filter){
             const {onSale, avgRating} = filter;
             if(onSale){
@@ -15,7 +15,7 @@ exports.Query= {
                 filteredProducts = filteredProducts.filter(product => {
                     let sumRating = 0;
                     let numOfReviews = 0;
-                    reviews.forEach(review => {
+                    db.reviews.forEach(review => {
                         if(review.productId === product.id) {
                             sumRating += review.rating;
                             numOfReviews +=1;
@@ -29,18 +29,18 @@ exports.Query= {
         }
         return filteredProducts
     },
-    product: (parent, {id: productId}, {products})=>{
-        const product = products.find(product => product.id === productId);
+    product: (parent, {id: productId}, {db})=>{
+        const product = db.products.find(product => product.id === productId);
         if(!product){
             return null;
         }
         return product;
     },
-    categories: (parent, args, {categories})=> {
-        return categories;
+    categories: (parent, args, {db})=> {
+        return db.categories;
     },
-    category: (parent, {id: catId}, {categories})=>{
-        const singleCat = categories.find(cat => cat.id === catId);
+    category: (parent, {id: catId}, {db})=>{
+        const singleCat = db.categories.find(cat => cat.id === catId);
         if(!singleCat) return null
         return singleCat;
     },
